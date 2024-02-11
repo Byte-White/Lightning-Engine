@@ -16,7 +16,7 @@ add_subdirectory(vendor/Magma)
 
 add_executable(MagmaApp 
 app/src/main.cpp
-)
+ "app/src/Engine.h" "app/src/Engine.cpp")
 
 
 target_link_libraries(MagmaApp
