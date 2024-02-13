@@ -1,3 +1,6 @@
 [submodule "vendor/Magma"]
 	path = vendor/Magma
 	url = https://github.com/Byte-White/Magma
+[submodule "vendor/glm"]
+	path = vendor/glm
+	url = https://github.com/g-truc/glm

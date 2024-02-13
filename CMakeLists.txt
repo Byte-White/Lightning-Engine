@@ -13,13 +13,15 @@ set(MAGMA_EMSCRIPTEN OFF)
 
 
 add_subdirectory(vendor/Magma)
+add_subdirectory(vendor/glm)
 
 add_executable(MagmaApp 
 app/src/main.cpp
- "app/src/Engine.h" "app/src/Engine.cpp")
+ "app/src/Engine.h" "app/src/Engine.cpp" "app/src/Renderer.h" "app/src/Renderer.cpp")
 
 
 target_link_libraries(MagmaApp
 PRIVATE
 magma
+glm
 )
