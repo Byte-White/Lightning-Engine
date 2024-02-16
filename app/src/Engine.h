@@ -7,6 +7,7 @@ class LightningEngine :public mg::Application
 {
 public:
 	void Init();
+	void Destroy();
 	void Render();
 public:
 	Renderer m_Renderer;
