@@ -17,7 +17,7 @@ add_subdirectory(vendor/glm)
 
 add_executable(MagmaApp 
 app/src/main.cpp
- "app/src/Engine.h" "app/src/Engine.cpp" "app/src/Renderer.h" "app/src/Renderer.cpp")
+ "app/src/Engine.h" "app/src/Engine.cpp" "app/src/Renderer.h" "app/src/Renderer.cpp" "app/src/Camera.h" "app/src/Camera.cpp" "app/src/Ray.h")
 
 
 target_link_libraries(MagmaApp
