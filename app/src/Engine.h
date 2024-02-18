@@ -13,5 +13,6 @@ public:
 public:
 	Renderer m_Renderer;
 	Camera m_Camera;
+	Scene m_Scene;
 };
 #endif
