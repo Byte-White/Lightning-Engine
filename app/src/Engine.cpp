@@ -1,8 +1,10 @@
 #include "Engine.h"
+#include <thread>
 
 LightningEngine::LightningEngine()
     :m_Camera(45.0f, 0.1f, 100.0f)
 {
+    MAGMA_INFO("CPU Cores: {0}",std::thread::hardware_concurrency());
     Material greenSphere; 
     greenSphere.Albedo = { 0.0f, 1.0f, 0.0f };
     greenSphere.Roughness = 0.0f;

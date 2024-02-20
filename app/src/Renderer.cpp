@@ -1,4 +1,7 @@
 #include "Renderer.h"
+#include <execution>
+
+
 namespace Utils
 {
 static glm::vec3 RandomVec3(float min, float max)
@@ -42,6 +45,14 @@ void Renderer::OnResize(uint32_t width, uint32_t height)
 
 	delete[] m_ImageData;
 	m_ImageData = new uint32_t[width * height];
+
+
+	m_ImageHorizontalIter.resize(width);
+	m_ImageVerticalIter.resize(height);
+	for (uint32_t i = 0; i < width; i++)
+		m_ImageHorizontalIter[i] = i;
+	for (uint32_t i = 0; i < height; i++)
+		m_ImageVerticalIter[i] = i;
 }
 
 
@@ -49,16 +60,19 @@ void Renderer::Render(const Scene& scene, const Camera& camera)
 {
 	m_ActiveScene = &scene;
 	m_ActiveCamera = &camera;
-
-	for (uint32_t y = 0; y < m_FinalImage->GetHeight(); y++)
-	{
-		for (uint32_t x = 0; x < m_FinalImage->GetWidth(); x++)
+	
+	std::for_each(std::execution::par, m_ImageVerticalIter.begin(), m_ImageVerticalIter.end(),
+		[this](uint32_t y)
 		{
-			glm::vec4 color = RayGen(x, y);
-			color = glm::clamp(color, glm::vec4(0.0f), glm::vec4(1.0f));
-			m_ImageData[x + y * m_FinalImage->GetWidth()] = Utils::ConvertToRGBA(color);
-		}
-	}
+			std::for_each(std::execution::par, m_ImageHorizontalIter.begin(), m_ImageHorizontalIter.end(),
+			[this, y](uint32_t x)
+				{
+					glm::vec4 color = RayGen(x, y);
+					color = glm::clamp(color, glm::vec4(0.0f), glm::vec4(1.0f));
+					m_ImageData[x + y * m_FinalImage->GetWidth()] = Utils::ConvertToRGBA(color);
+				});
+		});
+
 
 	m_FinalImage->SetData(m_ImageData);
 }
