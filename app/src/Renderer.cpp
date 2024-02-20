@@ -47,6 +47,9 @@ void Renderer::OnResize(uint32_t width, uint32_t height)
 	m_ImageData = new uint32_t[width * height];
 
 
+	delete[] m_AccumulationData;
+	m_AccumulationData = new glm::vec4[width * height];
+
 	m_ImageHorizontalIter.resize(width);
 	m_ImageVerticalIter.resize(height);
 	for (uint32_t i = 0; i < width; i++)
@@ -61,6 +64,9 @@ void Renderer::Render(const Scene& scene, const Camera& camera)
 	m_ActiveScene = &scene;
 	m_ActiveCamera = &camera;
 	
+	if (m_FrameIndex == 1)
+		memset(m_AccumulationData, 0, m_FinalImage->GetWidth() * m_FinalImage->GetHeight() * sizeof(glm::vec4));
+
 	std::for_each(std::execution::par, m_ImageVerticalIter.begin(), m_ImageVerticalIter.end(),
 		[this](uint32_t y)
 		{
@@ -68,13 +74,19 @@ void Renderer::Render(const Scene& scene, const Camera& camera)
 			[this, y](uint32_t x)
 				{
 					glm::vec4 color = RayGen(x, y);
-					color = glm::clamp(color, glm::vec4(0.0f), glm::vec4(1.0f));
-					m_ImageData[x + y * m_FinalImage->GetWidth()] = Utils::ConvertToRGBA(color);
+					m_AccumulationData[x + y * m_FinalImage->GetWidth()] += color;
+
+					glm::vec4 accumulatedColor = m_AccumulationData[x + y * m_FinalImage->GetWidth()];
+					accumulatedColor /= (float)m_FrameIndex;
+
+					accumulatedColor = glm::clamp(accumulatedColor, glm::vec4(0.0f), glm::vec4(1.0f));
+					m_ImageData[x + y * m_FinalImage->GetWidth()] = Utils::ConvertToRGBA(accumulatedColor);
 				});
 		});
 
 
 	m_FinalImage->SetData(m_ImageData);
+	m_FrameIndex++;
 }
 
 glm::vec4 Renderer::RayGen(uint32_t x,uint32_t y)

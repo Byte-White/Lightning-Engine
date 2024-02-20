@@ -44,7 +44,7 @@ void LightningEngine::Destroy()
 
 void LightningEngine::Render()
 {
-    m_Camera.OnUpdate(ImGui::GetIO().DeltaTime);
+    if(m_Camera.OnUpdate(ImGui::GetIO().DeltaTime))m_Renderer.ResetFrameIndex();
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
     ImGui::Begin("Viewport");
     //ImGui::Text("%d,%d", (int)ImGui::GetContentRegionAvail().x, (int)ImGui::GetContentRegionAvail().y);

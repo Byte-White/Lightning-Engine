@@ -18,7 +18,7 @@ void Camera::ResetPosition()
 	RecalculateRayDirections();
 }
 
-void Camera::OnUpdate(float ts)
+bool Camera::OnUpdate(float ts)
 {
 	glm::vec2 mousePos = { mg::Input::GetMousePosition().x,mg::Input::GetMousePosition().y };
 	glm::vec2 delta = (mousePos - m_LastMousePosition) * 0.002f;
@@ -27,7 +27,7 @@ void Camera::OnUpdate(float ts)
 	if (!mg::Input::IsMouseButtonPressed(mg::Mouse::ButtonRight))
 	{
 		mg::Input::SetCursorMode(mg::CursorMode::Normal);
-		return;
+		return false;
 	}
 
 	mg::Input::SetCursorMode(mg::CursorMode::Locked);
@@ -91,6 +91,7 @@ void Camera::OnUpdate(float ts)
 		RecalculateView();
 		RecalculateRayDirections();
 	}
+	return moved;
 }
 
 void Camera::RecalculateViewAndDirections()

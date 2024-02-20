@@ -13,6 +13,7 @@ public:
 	void Render(const Scene& scene, const Camera& camera);
 	std::shared_ptr<mg::Image> GetFinalImage() const { return  m_FinalImage; }
 	int& GetBounces() { return m_Bounces; }
+	void ResetFrameIndex() { m_FrameIndex = 1; }
 	void Destroy();
 private:
 	struct HitPayload
@@ -38,6 +39,9 @@ private:
 	const Camera* m_ActiveCamera = nullptr;
 
 	uint32_t* m_ImageData = nullptr;
+
+	glm::vec4* m_AccumulationData = nullptr;
+	uint32_t m_FrameIndex = 1;
 
 	int m_Bounces = 3;
 };
