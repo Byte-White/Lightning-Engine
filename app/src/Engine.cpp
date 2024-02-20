@@ -71,7 +71,9 @@ void LightningEngine::Render()
     ImGui::DragFloat("Shift Speed", &m_Camera.GetShiftSpeed(),0.25f);
     ImGui::DragFloat("Normal Speed", &m_Camera.GetNormalSpeed(), 0.25f);
     ImGui::DragFloat("Control Speed", &m_Camera.GetControlSpeed(), 0.25f);
-    ImGui::SeparatorText("Scene");
+    ImGui::End();
+
+    ImGui::Begin("Scene Editor");
     int sphereIndex = 0;
     for (auto& sphere : m_Scene.Spheres)
     {
@@ -85,6 +87,22 @@ void LightningEngine::Render()
         ImGui::PopID();
         
         sphereIndex++;
+    }
+    ImGui::End();
+
+    int materialIndex = 0;
+    ImGui::Begin("Material Editor");
+    for (auto& material : m_Scene.Materials)
+    {
+        ImGui::PushID(materialIndex);
+        ImGui::Separator();
+        ImGui::Text("Material Index: %d", materialIndex);
+        ImGui::ColorPicker3("Albedo", &material.Albedo.r);
+        ImGui::DragFloat("Metalic", &material.Metallic, 0.005, 0.f, 1.f);
+        ImGui::DragFloat("Roughness", &material.Roughness, 0.005, 0.f, 1.f);
+        ImGui::PopID();
+
+        materialIndex++;
     }
     ImGui::End();
 }

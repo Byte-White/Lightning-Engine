@@ -166,7 +166,7 @@ Renderer::HitPayload Renderer::ClosestHit(const Ray& ray, float hitDistance, int
 	glm::vec3 origin = ray.Origin - closestSphere.Position;
 	payload.WorldPosition = origin + ray.Direction * hitDistance;
 	payload.WorldNormal = glm::normalize(payload.WorldPosition);
-
+	
 	payload.WorldPosition += closestSphere.Position;
 
 	return payload;
