@@ -34,7 +34,7 @@ LightningEngine::LightningEngine()
 
 void LightningEngine::Init()
 {
-
+    mg::DeepOceanTheme();
 }
 
 void LightningEngine::Destroy()
@@ -73,7 +73,7 @@ void LightningEngine::Render()
     ImGui::DragFloat("Control Speed", &m_Camera.GetControlSpeed(), 0.25f);
     ImGui::SeparatorText("Scene");
     int sphereIndex = 0;
-    for (auto sphere : m_Scene.Spheres)
+    for (auto& sphere : m_Scene.Spheres)
     {
         ImGui::PushID(sphereIndex);
 
