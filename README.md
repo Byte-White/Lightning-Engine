@@ -6,6 +6,8 @@ Lightning Engine is a basic CPU ray tracing engine powered by Magma.
 
 # Screenshots:
 
+![image](https://github.com/Byte-White/Lightning-Engine/assets/51212450/2691336d-6bd5-477f-ad7f-63c51a1775b4)
+
 ![image](https://github.com/Byte-White/Lightning-Engine/assets/51212450/050a96af-a66e-4378-933c-fc35ea456e42)
 
 ![image](https://github.com/Byte-White/Lightning-Engine/assets/51212450/a6a26acf-4bc5-43a0-8b5d-647f7a55fcdb)

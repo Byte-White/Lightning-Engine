@@ -126,12 +126,19 @@ glm::vec4 Renderer::RayGen(uint32_t x,uint32_t y)
 
 		contribution *= material.Albedo;
 		light += material.GetEmission();
-
-		ray.Origin = payload.WorldPosition + payload.WorldNormal * 0.0001f;
-		//ray.Direction = glm::reflect(ray.Direction,
-		//	payload.WorldNormal + material.Roughness * Utils::RandomVec3(-0.5f, 0.5f));
-
-		ray.Direction = glm::normalize(payload.WorldNormal + Utils::RandomInUnitSphere());
+		if (material.Metallic > 0.0f) 
+		{
+			// Calculate reflection direction for metallic materials
+			glm::vec3 reflectedDir = glm::reflect(ray.Direction, payload.WorldNormal);
+			// Apply roughness
+			reflectedDir = glm::normalize(reflectedDir + material.Roughness * Utils::RandomInUnitSphere());
+			ray.Direction = reflectedDir;
+		}
+		else 
+		{
+			ray.Origin = payload.WorldPosition + payload.WorldNormal * 0.0001f;
+			ray.Direction = glm::normalize(payload.WorldNormal + Utils::RandomInUnitSphere());
+		}
 	}
 
 	return glm::vec4(light, 1.0f);
