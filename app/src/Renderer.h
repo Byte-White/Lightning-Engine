@@ -13,6 +13,7 @@ public:
 	void Render(const Scene& scene, const Camera& camera);
 	std::shared_ptr<mg::Image> GetFinalImage() const { return  m_FinalImage; }
 	int& GetBounces() { return m_Bounces; }
+	glm::vec3& GetSkyColor() { return m_skyColor; }
 	void ResetFrameIndex() { m_FrameIndex = 1; }
 	void Destroy();
 private:
@@ -42,6 +43,8 @@ private:
 
 	glm::vec4* m_AccumulationData = nullptr;
 	uint32_t m_FrameIndex = 1;
+
+	glm::vec3 m_skyColor = glm::vec3(0.6f, 0.7f, 0.9f);
 
 	int m_Bounces = 3;
 };

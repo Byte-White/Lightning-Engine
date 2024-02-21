@@ -5,6 +5,18 @@ LightningEngine::LightningEngine()
     :m_Camera(45.0f, 0.1f, 100.0f)
 {
     MAGMA_INFO("CPU Cores: {0}",std::thread::hardware_concurrency());
+    Material groundMaterial;
+    groundMaterial.Albedo = { 1.0f, 1.0f, 1.0f };
+    groundMaterial.Roughness = 0.5f;
+    m_Scene.Materials.emplace_back(groundMaterial);
+    
+    Material lightMaterial;
+    lightMaterial.Albedo = { 1.0f, 1.0f, 0.0f };
+    lightMaterial.Roughness = 0.0f;
+    lightMaterial.EmissionColor = { 1.0f, 1.0f, 0.0f };
+    lightMaterial.EmissionPower = 2.5f;
+    m_Scene.Materials.emplace_back(lightMaterial);
+
     Material greenSphere; 
     greenSphere.Albedo = { 0.0f, 1.0f, 0.0f };
     greenSphere.Roughness = 0.0f;
@@ -16,18 +28,34 @@ LightningEngine::LightningEngine()
     m_Scene.Materials.emplace_back(redSphere);
     
     {
+        Sphere groundSphere;
+        groundSphere.Position = { 0.0f, 101.0f, 0.0f };
+        groundSphere.Radius = 100.0f;
+        groundSphere.MaterialIndex = 0;
+        m_Scene.Spheres.push_back(groundSphere);
+    }
+
+    {
+        Sphere lightSphere;
+        lightSphere.Position = { 0.0f, -5.0f, 3.0f };
+        lightSphere.Radius = 1.5f;
+        lightSphere.MaterialIndex = 1;
+        m_Scene.Spheres.push_back(lightSphere);
+    }
+
+    {
         Sphere sphere;
         sphere.Position = { 0.0f, 0.0f, 0.0f };
         sphere.Radius = 1.0f;
-        sphere.MaterialIndex = 0;
+        sphere.MaterialIndex = 2;
         m_Scene.Spheres.push_back(sphere);
     }
 
     {
         Sphere sphere;
         sphere.Position = { 0.0f, 0.0f, -6.0f };
-        sphere.Radius = 5.0f;
-        sphere.MaterialIndex = 1;
+        sphere.Radius = 2.0f;
+        sphere.MaterialIndex = 3;
         m_Scene.Spheres.push_back(sphere);
     }
 }
@@ -71,6 +99,9 @@ void LightningEngine::Render()
     ImGui::DragFloat("Shift Speed", &m_Camera.GetShiftSpeed(),0.25f);
     ImGui::DragFloat("Normal Speed", &m_Camera.GetNormalSpeed(), 0.25f);
     ImGui::DragFloat("Control Speed", &m_Camera.GetControlSpeed(), 0.25f);
+
+    ImGui::ColorEdit3("Sky Color", &m_Renderer.GetSkyColor().r);
+    // ImGui::DragFloat3("Direction", &m_Renderer.GetSkyLightDirection().x); // might add it in the future
     ImGui::End();
 
     ImGui::Begin("Scene Editor");
@@ -100,6 +131,8 @@ void LightningEngine::Render()
         ImGui::ColorPicker3("Albedo", &material.Albedo.r);
         ImGui::DragFloat("Metalic", &material.Metallic, 0.005, 0.f, 1.f);
         ImGui::DragFloat("Roughness", &material.Roughness, 0.005, 0.f, 1.f);
+        ImGui::ColorPicker3("Emission Color", &material.EmissionColor.r);
+        ImGui::DragFloat("Emission Power", &material.EmissionPower);
         ImGui::PopID();
 
         materialIndex++;
