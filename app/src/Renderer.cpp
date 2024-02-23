@@ -6,6 +6,7 @@ namespace Utils
 {
 static glm::vec3 RandomVec3(float min, float max)
 {
+	/*
 	float randX = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
 	float randY = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
 	float randZ = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
@@ -16,6 +17,8 @@ static glm::vec3 RandomVec3(float min, float max)
 	float scaledZ = randZ * (max - min) + min;
 
 	return glm::vec3(scaledX, scaledY, scaledZ);
+	*/
+	return glm::vec3(mg::Random::Float(), mg::Random::Float(), mg::Random::Float());
 }
 
 static glm::vec3 RandomInUnitSphere()
