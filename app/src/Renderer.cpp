@@ -18,7 +18,7 @@ static glm::vec3 RandomVec3(float min, float max)
 
 	return glm::vec3(scaledX, scaledY, scaledZ);
 	*/
-	return glm::vec3(mg::Random::Float(), mg::Random::Float(), mg::Random::Float());
+	return glm::vec3(mg::Random::Float(min,max), mg::Random::Float(min, max), mg::Random::Float(min, max));
 }
 
 static glm::vec3 RandomInUnitSphere()
