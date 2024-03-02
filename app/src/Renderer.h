@@ -10,7 +10,7 @@ class Renderer
 {
 public:
 	void OnResize(uint32_t width, uint32_t height);
-	void Render(const Scene& scene, const Camera& camera);
+	void Render(Scene& scene, Camera& camera);
 	std::shared_ptr<mg::Image> GetFinalImage() const { return  m_FinalImage; }
 	int& GetBounces() { return m_Bounces; }
 	glm::vec3& GetSkyColor() { return m_skyColor; }
@@ -36,8 +36,8 @@ private:
 	std::vector<uint32_t> m_ImageHorizontalIter, m_ImageVerticalIter;
 
 	std::shared_ptr<mg::Image> m_FinalImage;
-	const Scene* m_ActiveScene = nullptr;
-	const Camera* m_ActiveCamera = nullptr;
+	Scene* m_ActiveScene = nullptr;
+	Camera* m_ActiveCamera = nullptr;
 
 	uint32_t* m_ImageData = nullptr;
 

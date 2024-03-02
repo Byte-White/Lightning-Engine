@@ -67,7 +67,7 @@ void Renderer::OnResize(uint32_t width, uint32_t height)
 }
 
 
-void Renderer::Render(const Scene& scene, const Camera& camera)
+void Renderer::Render(Scene& scene, Camera& camera)
 {
 	m_ActiveScene = &scene;
 	m_ActiveCamera = &camera;
@@ -119,8 +119,8 @@ glm::vec4 Renderer::RayGen(uint32_t x,uint32_t y)
 
 
 
-		const Sphere& sphere = m_ActiveScene->Spheres[payload.ObjectIndex];
-		const Material& material = m_ActiveScene->Materials[sphere.MaterialIndex];
+		const Object* object = m_ActiveScene->Objects[payload.ObjectIndex];
+		const Material& material = m_ActiveScene->Materials[object->MaterialIndex];
 
 		glm::vec3 sphereColor = material.Albedo;
 		color += sphereColor * multiplier;
@@ -156,34 +156,24 @@ Renderer::HitPayload Renderer::TraceRay(const Ray& ray)
 	// r = radius
 	// t = hit distance
 
-	int closestSphere = -1;
+	int closestObject = -1;
 	float hitDistance = std::numeric_limits<float>::max();
-	for (size_t i = 0; i < m_ActiveScene->Spheres.size(); i++)
+	for (size_t i = 0; i < m_ActiveScene->Objects.size(); i++)
 	{
-		const Sphere& sphere = m_ActiveScene->Spheres[i];
-		glm::vec3 origin = ray.Origin - sphere.Position;
-
-		float a = glm::dot(ray.Direction, ray.Direction);
-		float b = 2.0f * glm::dot(origin, ray.Direction);
-		float c = glm::dot(origin, origin) - sphere.Radius * sphere.Radius;
-
-
-		float discriminant = b * b - 4.0f * a * c;
-		if (discriminant < 0.0f)
-			continue;
-
-		float closestT = (-b - glm::sqrt(discriminant)) / (2.0f * a);
-		if (closestT > 0.0f && closestT < hitDistance)
+		Object* object = m_ActiveScene->Objects[i];
+		glm::vec3 origin = ray.Origin - object->Position;
+		if (object->hit(ray, origin, hitDistance))
 		{
-			hitDistance = closestT;
-			closestSphere = (int)i;
+			//MAGMA_CORE_TRACE("hit at {0}", i);
+			// object.hit changes hitDistance on hit
+			closestObject = i;
 		}
 	}
 
-	if (closestSphere < 0)
+	if (closestObject < 0)
 		return Miss(ray);
 
-	return ClosestHit(ray, hitDistance, closestSphere);
+	return ClosestHit(ray, hitDistance, closestObject);
 }
 
 Renderer::HitPayload Renderer::ClosestHit(const Ray& ray, float hitDistance, int objectIndex)
@@ -192,13 +182,13 @@ Renderer::HitPayload Renderer::ClosestHit(const Ray& ray, float hitDistance, int
 	payload.HitDistance = hitDistance;
 	payload.ObjectIndex = objectIndex;
 
-	const Sphere& closestSphere = m_ActiveScene->Spheres[objectIndex];
+	const Object* closestObject = m_ActiveScene->Objects[objectIndex];
 
-	glm::vec3 origin = ray.Origin - closestSphere.Position;
+	glm::vec3 origin = ray.Origin - closestObject->Position;
 	payload.WorldPosition = origin + ray.Direction * hitDistance;
 	payload.WorldNormal = glm::normalize(payload.WorldPosition);
 	
-	payload.WorldPosition += closestSphere.Position;
+	payload.WorldPosition += closestObject->Position;
 
 	return payload;
 }
@@ -214,4 +204,6 @@ void Renderer::Destroy()
 {
 	m_FinalImage.reset();
 	delete[] m_ImageData;
+
+	for (auto obj : m_ActiveScene->Objects) delete obj;
 }

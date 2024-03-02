@@ -28,35 +28,35 @@ LightningEngine::LightningEngine()
     m_Scene.Materials.emplace_back(redSphere);
     
     {
-        Sphere groundSphere;
-        groundSphere.Position = { 0.0f, 101.0f, 0.0f };
-        groundSphere.Radius = 100.0f;
-        groundSphere.MaterialIndex = 0;
-        m_Scene.Spheres.push_back(groundSphere);
+        Sphere* groundSphere = new Sphere();
+        groundSphere->Position = { 0.0f, 101.0f, 0.0f };
+        groundSphere->Radius = 100.0f;
+        groundSphere->MaterialIndex = 0;
+        m_Scene.Objects.push_back(groundSphere);
     }
 
     {
-        Sphere lightSphere;
-        lightSphere.Position = { 0.0f, -5.0f, 3.0f };
-        lightSphere.Radius = 1.5f;
-        lightSphere.MaterialIndex = 1;
-        m_Scene.Spheres.push_back(lightSphere);
+        Sphere* lightSphere = new Sphere();
+        lightSphere->Position = { 0.0f, -5.0f, 3.0f };
+        lightSphere->Radius = 1.5f;
+        lightSphere->MaterialIndex = 1;
+        m_Scene.Objects.push_back(lightSphere);
     }
 
     {
-        Sphere sphere;
-        sphere.Position = { 0.0f, 0.0f, 0.0f };
-        sphere.Radius = 1.0f;
-        sphere.MaterialIndex = 2;
-        m_Scene.Spheres.push_back(sphere);
+        Sphere* sphere = new Sphere();
+        sphere->Position = { 0.0f, 0.0f, 0.0f };
+        sphere->Radius = 1.0f;
+        sphere->MaterialIndex = 2;
+        m_Scene.Objects.push_back(sphere);
     }
 
     {
-        Sphere sphere;
-        sphere.Position = { 0.0f, 0.0f, -6.0f };
-        sphere.Radius = 2.0f;
-        sphere.MaterialIndex = 3;
-        m_Scene.Spheres.push_back(sphere);
+        Sphere* sphere = new Sphere();
+        sphere->Position = { 0.0f, 0.0f, -6.0f };
+        sphere->Radius = 2.0f;
+        sphere->MaterialIndex = 3;
+        m_Scene.Objects.push_back(sphere);
     }
 }
 
@@ -105,19 +105,21 @@ void LightningEngine::Render()
     ImGui::End();
 
     ImGui::Begin("Scene Editor");
-    int sphereIndex = 0;
-    for (auto& sphere : m_Scene.Spheres)
+    int objectIndex = 0;
+    for (auto& object : m_Scene.Objects)
     {
-        ImGui::PushID(sphereIndex);
+        ImGui::PushID(objectIndex);
 
-        ImGui::Text("Sphere %d", sphereIndex);
-        ImGui::SliderInt("Material Index", &sphere.MaterialIndex,0,m_Scene.Materials.size()-1);
-        ImGui::DragFloat3("Position", &sphere.Position.x);
-        ImGui::DragFloat("Radius", &sphere.Radius);
-        
+        ImGui::Text("Sphere %d", objectIndex);
+        ImGui::SliderInt("Material Index", &object->MaterialIndex,0,m_Scene.Materials.size()-1);
+        ImGui::DragFloat3("Position", &object->Position.x);
+
+        // object specific edit
+        object->EditUI();
+
         ImGui::PopID();
         
-        sphereIndex++;
+        objectIndex++;
     }
     ImGui::End();
 
